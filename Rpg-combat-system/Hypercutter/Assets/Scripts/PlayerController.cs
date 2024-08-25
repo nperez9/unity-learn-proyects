@@ -58,8 +58,6 @@ public class PlayerController : MonoBehaviour
     private void SetPlayerFacing()
     {
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // Ensure the z-axis does not affect the comparison
-        mouseWorldPosition.z = transform.position.z;
 
         if (mouseWorldPosition.x < transform.position.x)
         {
