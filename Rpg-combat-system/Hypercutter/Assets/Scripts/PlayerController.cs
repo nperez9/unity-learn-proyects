@@ -6,15 +6,19 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 5.0f;
+
     private PlayerActions playerActions;
     private new Rigidbody2D rigidbody2D = null;
-
     private Vector2 movement;
+    private Animator animator = null;
+    private SpriteRenderer sprite = null;
 
     private void Awake()
     {
         playerActions = new PlayerActions();
         rigidbody2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     private void OnEnable()
@@ -30,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         PlayerInput();
+        SetPlayerFacing();
     }
 
     private void FixedUpdate()
@@ -39,11 +44,30 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerInput()
     {
-        this.movement = playerActions.Movement.Move.ReadValue<Vector2>();
+        movement = playerActions.Movement.Move.ReadValue<Vector2>();
+        animator.SetFloat("moveX", movement.x);
+        animator.SetFloat("moveY", movement.y);
     }
 
     private void MoveWithPyshics()
     {
         rigidbody2D.MovePosition(rigidbody2D.position + movement * (speed * Time.fixedDeltaTime));
+    }
+
+
+    private void SetPlayerFacing()
+    {
+        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // Ensure the z-axis does not affect the comparison
+        mouseWorldPosition.z = transform.position.z;
+
+        if (mouseWorldPosition.x < transform.position.x)
+        {
+            sprite.flipX = true;
+        }
+        else
+        {
+            sprite.flipX = false;
+        }
     }
 }
